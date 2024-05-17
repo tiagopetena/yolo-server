@@ -14,6 +14,7 @@ async def send_frames():
         video_path = str(VIDEO_PATH)
         cap = cv2.VideoCapture(video_path)
         frame_n = -1
+        people_count = 0
         while cap.isOpened():
             ret, frame = cap.read()
             if not ret:
@@ -30,31 +31,10 @@ async def send_frames():
             detections = json.loads(str(ack))
 
             for i, bbox in enumerate(detections):
-                bbox_x = bbox["bbox"][0]
-                bbox_y = bbox["bbox"][1]
-                bbox_width = bbox["bbox"][2]
-                bbox_height = bbox["bbox"][3]
+                if bbox["id"] >= people_count:
+                    people_count = bbox["id"]
 
-                cv2.rectangle(
-                    frame,
-                    (bbox_x, bbox_y),
-                    (bbox_x + bbox_width, bbox_y + bbox_height),
-                    (0, 255, 0),
-                    2,
-                )
-
-                cv2.putText(
-                    frame,
-                    str(bbox["id"]),
-                    (bbox_x, bbox_y),
-                    cv2.FONT_HERSHEY_SIMPLEX,
-                    0.5,
-                    (0, 0, 255),
-                    2,
-                )
-
-            cv2.imshow("frame", frame)
-            cv2.waitKey(1)
+        print(people_count)
 
 
 asyncio.run(send_frames())
