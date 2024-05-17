@@ -6,7 +6,7 @@ import websockets
 
 async def send_frames():
     async with websockets.connect("ws://localhost:8000/video") as websocket:
-        video_path = "/home/tpet/Documents/yolo-server/videos/02.mp4"
+        video_path = "/home/tpet/Documents/yolo-server/videos/01.mp4"
         cap = cv2.VideoCapture(video_path)
         frame_n = -1
         while cap.isOpened():
@@ -23,9 +23,8 @@ async def send_frames():
             ack = await websocket.recv()
 
             detections = json.loads(str(ack))
-            print(frame_n)
 
-            for bbox in detections:
+            for i, bbox in enumerate(detections):
                 bbox_x = bbox["bbox"][0]
                 bbox_y = bbox["bbox"][1]
                 bbox_width = bbox["bbox"][2]
@@ -36,6 +35,16 @@ async def send_frames():
                     (bbox_x, bbox_y),
                     (bbox_x + bbox_width, bbox_y + bbox_height),
                     (0, 255, 0),
+                    2,
+                )
+
+                cv2.putText(
+                    frame,
+                    str(bbox["id"]),
+                    (bbox_x, bbox_y),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    0.5,
+                    (0, 0, 255),
                     2,
                 )
 
