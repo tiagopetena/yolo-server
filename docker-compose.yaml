@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  server:
+    build:
+      context: ./server
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./server:/yolo-tracker
+
+  client1:
+    build:
+      context: ./client
+    depends_on:
+      - server
+    environment:
+      VIDEO_PATH: /videos/01.mp4
+    network_mode: host
+    volumes:
+      - ./videos:/videos
+
+  client2:
+    build:
+      context: ./client
+    depends_on:
+      - server
+    environment:
+      VIDEO_PATH: /videos/02.mp4
+    network_mode: host
+    volumes:
+      - ./videos:/videos

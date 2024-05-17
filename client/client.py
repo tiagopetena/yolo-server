@@ -3,10 +3,15 @@ import json
 import asyncio
 import websockets
 
+import os
+
+
+VIDEO_PATH = os.getenv('VIDEO_PATH')
+
 
 async def send_frames():
     async with websockets.connect("ws://localhost:8000/video") as websocket:
-        video_path = "/home/tpet/Documents/yolo-server/videos/01.mp4"
+        video_path = str(VIDEO_PATH)
         cap = cv2.VideoCapture(video_path)
         frame_n = -1
         while cap.isOpened():
