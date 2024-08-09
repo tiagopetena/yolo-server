@@ -20,5 +20,5 @@ RUN apt install -y libgl1-mesa-glx \
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-CMD ["python3", "client.py"]
+CMD ["python3","-u", "client.py"]
 
